@@ -1,20 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import "./App.css";
 
-const api =  process.env.REACT_APP_API_URL
+const api = process.env.REACT_APP_API_URL;
 
 function App() {
-
-  const [message, setMessage] = useState("")
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
-    fetch(`${api}/api/message`).then( (response) => setMessage(response))
-  }, [])
+    fetch(`${api}/api/message`)
+      .then((response) => response.json())
+      .then((response) => setMessage(response));
+  }, []);
 
   return (
     <div className="App">
       <header className="App-header">
-        {message}
+        {JSON.stringify(message)}
         {process.env.NODE_ENV}
       </header>
     </div>
