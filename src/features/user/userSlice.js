@@ -1,27 +1,31 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { me } from "./userAPI";
+import { connect, me } from "./userAPI";
 
 const initialState = {
   me: null,
-  friend: []
+  token: null,
+  friend: [],
 };
 
-export const meAsync = createAsyncThunk(
-  "users/me",
-  async () => {
-    return await me();
-  }
-);
+export const meAsync = createAsyncThunk("users/me", async (token) => {
+  return await me(token);
+});
+
+export const loginAsync = createAsyncThunk("users/login", async (user) => {
+  return await connect(user);
+});
 
 export const userSlice = createSlice({
   name: "user",
   initialState,
-  reducers: {
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(meAsync.fulfilled, (state, action) => {
         state.me = action.payload;
+      })
+      .addCase(loginAsync.fulfilled, (state, action) => {
+        state.token = action.payload.token;
       });
   },
 });

@@ -2,17 +2,18 @@ import { Button, Card, Col, Input, Row, Space } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import "./Login.css";
-import { meAsync } from "./userSlice";
+import { loginAsync } from "./userSlice";
 
 export function Login() {
   const dispatch = useDispatch();
-  const [login, setLogin] = useState("")
-  const [password, setPassword] = useState("")
+  const [login, setLogin] = useState("");
+  const [message, setMessage] = useState("");
+  const [password, setPassword] = useState("");
   useEffect(() => {}, [dispatch]);
 
   const connexionHandler = () => {
-    dispatch(meAsync({}))
-  }
+    dispatch(loginAsync({ login, password })).then(action => action.error && setMessage('Problème lors de la connexion'));
+  };
 
   return (
     <Row>
@@ -20,10 +21,22 @@ export function Login() {
       <Col span={6}>
         <Space align="center" wrap>
           <Card className="Login">
-            <Input value={login} onChange={(e) => setLogin(e.target.value)} placeholder="Login" />
-            <Input value={password} onChange={(e) => setPassword(e.target.value)} type="password" placeholder="Mot de passe" />
+            <Input
+              value={login}
+              onChange={(e) => setLogin(e.target.value)}
+              placeholder="Login"
+            />
+            <Input
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              type="password"
+              placeholder="Mot de passe"
+            />
+            {message}
             <Space>
-              <Button type="primary" onClick={connexionHandler}>Connexion</Button>
+              <Button type="primary" onClick={connexionHandler}>
+                Connexion
+              </Button>
               <Button>Crée un compte</Button>
             </Space>
           </Card>

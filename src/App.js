@@ -1,19 +1,24 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Login } from "./features/user/Login";
 import "antd/dist/antd.css";
 import Layout, { Content, Header } from "antd/lib/layout/layout";
 import { Space, Typography } from "antd";
 import "./App.css";
-import { selectUser } from "./features/user/userSlice";
+import { selectUser, meAsync } from "./features/user/userSlice";
 import { Route, Switch } from "react-router";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Home } from "./app/Home";
 import { BrowserRouter } from "react-router-dom";
 
 const { Title } = Typography;
 
 function App() {
-  const user = useSelector(selectUser);
+  const {me, token} = useSelector(selectUser);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    token && dispatch(meAsync(token))
+  }, [token, dispatch])
 
   return (
     <Layout className="App">
@@ -27,7 +32,7 @@ function App() {
       <BrowserRouter>
         <Content>
           <Switch>
-            <Route exact path="/" render={() => user.me?<Home/>:<Login/>} />
+            <Route exact path="/" render={() => me?<Home/>:<Login/>} />
           </Switch>
         </Content>
       </BrowserRouter>
