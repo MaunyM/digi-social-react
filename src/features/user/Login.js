@@ -2,7 +2,7 @@ import { Button, Card, Col, Input, Row, Space } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import "./Login.css";
-import { loginAsync } from "./userSlice";
+import { inscriptionAsync, loginAsync } from "./userSlice";
 
 export function Login() {
   const dispatch = useDispatch();
@@ -12,7 +12,12 @@ export function Login() {
   useEffect(() => {}, [dispatch]);
 
   const connexionHandler = () => {
-    dispatch(loginAsync({ login, password })).then(action => action.error && setMessage('Problème lors de la connexion'));
+    dispatch(loginAsync({ login, password })).then(({error}) => error && setMessage('Problème lors de la connexion'));
+  };
+
+
+  const inscriptionHandler = () => {
+    dispatch(inscriptionAsync({ login, password })).then(({error}) => error && setMessage("Problème lors de l'inscription"));
   };
 
   return (
@@ -37,7 +42,7 @@ export function Login() {
               <Button type="primary" onClick={connexionHandler}>
                 Connexion
               </Button>
-              <Button>Crée un compte</Button>
+              <Button onClick={inscriptionHandler}>S'inscrire</Button>
             </Space>
           </Card>
         </Space>
