@@ -11,16 +11,17 @@ import { Home } from "./app/Home";
 import { BrowserRouter } from "react-router-dom";
 import { ProtectedRoute } from "./app/ProtectedRoute";
 import { Comptoir } from "./features/comptoir/Comptoir";
+import { Signup } from "./features/user/Signup";
 
 const { Title } = Typography;
 
 function App() {
-  const { me, token, redirect } = useSelector(selectUser);
+  const { me, redirect } = useSelector(selectUser);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    token && dispatch(meAsync(token));
-  }, [token, dispatch]);
+    dispatch(meAsync());
+  }, [dispatch]);
 
   return (
     <Layout className="App">
@@ -37,6 +38,9 @@ function App() {
           <Switch>
             <Route exact path="/login">
               <Login />
+            </Route>
+            <Route exact path="/signup">
+              <Signup />
             </Route>
             <ProtectedRoute exact path="/">
               <Home />

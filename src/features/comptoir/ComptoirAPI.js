@@ -1,56 +1,48 @@
 const api = process.env.REACT_APP_API_URL;
 
-export function create(token, comptoir) {
+export function create(comptoir) {
   return fetch(`${api}/comptoir`, {
     method: "POST",
+    credentials: 'include',
     body: JSON.stringify(comptoir),
     headers: {
-      authorization: `bearer ${token}`,
       "content-type": "application/json",
     },
   }).then((response) => response.json());
 }
 
-export function myComptoir(token) {
+export function myComptoir() {
   return fetch(`${api}/comptoir/mine`, {
-    headers: {
-      authorization: `bearer ${token}`,
-    },
+    credentials: 'include',
   }).then((response) => response.json());
 }
-export function all(token) {
+export function all() {
   return fetch(`${api}/comptoir`, {
-    headers: {
-      authorization: `bearer ${token}`,
-    },
+    credentials: 'include',
   }).then((response) => response.json());
 }
 
-export function join(token, id) {
+export function join(id) {
   return fetch(`${api}/comptoir/${id}`, {
     method: "PUT",
-    headers: {
-      authorization: `bearer ${token}`,
-    },
+    credentials: 'include',
   }).then((response) => response.json());
 }
 
-export function leave(token, id) {
+export function leave(id) {
   return fetch(`${api}/comptoir/mine/leave`, {
     method: "PUT",
-    headers: {
-      authorization: `bearer ${token}`,
-    },
+    credentials: 'include',
   }).then((response) => response.json());
 }
 
-export function createMessage(token, message) {
+export function createMessage(message) {
   return fetch(`${api}/comptoir/mine/message`, {
     method: "POST",
+    credentials: 'include',
     body: JSON.stringify(message),
     headers: {
       "content-type": "application/json",
-      authorization: `bearer ${token}`,
     },
   });
 }

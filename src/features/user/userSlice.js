@@ -1,10 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { connect, inscription, me } from "./userAPI";
-import { useSelector } from "react-redux";
 
 const initialState = {
   me: null,
-  token: null,
+  authent: false,
   friend: [],
   redirect: "/",
 };
@@ -37,11 +36,11 @@ export const userSlice = createSlice({
       .addCase(meAsync.fulfilled, (state, action) => {
         state.me = action.payload;
       })
-      .addCase(loginAsync.fulfilled, (state, action) => {
-        state.token = action.payload.token;
+      .addCase(inscriptionAsync.fulfilled, (state) => {
+        state.authent = true;
       })
-      .addCase(inscriptionAsync.fulfilled, (state, action) => {
-        state.token = action.payload.token;
+      .addCase(loginAsync.fulfilled, (state) => {
+        state.authent = true;
       });
   },
 });
@@ -49,10 +48,5 @@ export const userSlice = createSlice({
 export const selectUser = (state) => state.user;
 
 export const { storeRedirect } = userSlice.actions;
-
-export const useToken = () => {
-  const { token } = useSelector(selectUser);
-  return token;
-};
 
 export default userSlice.reducer;

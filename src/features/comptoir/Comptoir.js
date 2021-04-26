@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { useParams } from "react-router";
 import socketIOClient from "socket.io-client";
 import { UserList } from "../user/UserList";
-import { selectUser, useToken } from "../user/userSlice";
+import { selectUser } from "../user/userSlice";
 import { createMessage, join, leave, myComptoir } from "./ComptoirAPI";
 import { MessageForm } from "./message/MessageForm";
 import { MessageList } from "./message/MessageList";
@@ -20,7 +20,6 @@ export function Comptoir() {
 
   const { me } = useSelector(selectUser);
   let { id } = useParams();
-  const token = useToken();
 
   useEffect(() => {
     const innerSocket = socketIOClient(api, { withCredentials: true });
@@ -31,7 +30,7 @@ export function Comptoir() {
   }, []);
 
   useEffect(() => {
-    join(token, id).then((data) => {
+    join(id).then((data) => {
       setComptoir(data);
       setPilliers(data.pilliers);
       setMessages(transform(data.messages));
@@ -39,27 +38,25 @@ export function Comptoir() {
     return async () => {
       await leave();
     };
-  }, [token, id]);
+  }, [id]);
 
   useEffect(() => {
-    console.log("join");
     comptoir && socket && socket.emit("join", { me, comptoir });
   }, [comptoir, me, socket]);
 
   useEffect(() => {
-    token &&
-      socket &&
+    socket &&
       socket.on("update", () => {
-        myComptoir(token).then((data) => {
+        myComptoir().then((data) => {
           setPilliers(data.pilliers);
           setMessages(transform(data.messages));
         });
       });
-  }, [socket, token]);
+  }, [socket]);
 
   const newMessageHandler = (content) => {
     setSubmitting(true);
-    createMessage(token, { content }).then(() => {
+    createMessage({ content }).then(() => {
       socket.emit("new-message");
       setSubmitting(false);
     });
@@ -69,7 +66,9 @@ export function Comptoir() {
     <div>
       Comptoir {comptoir && comptoir.nom}
       <Row>
-        <Col span={6}><UserList users={pilliers} /></Col>
+        <Col span={6}>
+          <UserList users={pilliers} />
+        </Col>
         <Col span={12}>
           <MessageList messages={messages}></MessageList>
           <MessageForm

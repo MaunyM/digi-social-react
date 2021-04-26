@@ -2,18 +2,17 @@ import { Button, Card, Col, Form, Input, Row, Space } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import "./Login.css";
-import { loginAsync } from "./userSlice";
+import { inscriptionAsync } from "./userSlice";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom";
 
-export function Login() {
+export function Signup() {
   const dispatch = useDispatch();
   const [message, setMessage] = useState("");
   useEffect(() => {}, [dispatch]);
 
   const onFinish = ({ login, password }) => {
-    dispatch(loginAsync({ login, password })).then(
-      ({ error }) => error && setMessage(error)
+    dispatch(inscriptionAsync({ login, password })).then(
+      ({ error }) => error && setMessage("Problème lors de l'inscription")
     );
   };
 
@@ -35,6 +34,7 @@ export function Login() {
               </Form.Item>
               <Form.Item
                 name="password"
+                hasFeedback
                 rules={[
                   {
                     required: true,
@@ -42,20 +42,45 @@ export function Login() {
                   },
                 ]}
               >
-                <Input
+                <Input.Password
                   prefix={<LockOutlined className="site-form-item-icon" />}
-                  type="password"
-                  placeholder="Password"
+                  placeholder="Mot de passe"
+                />
+              </Form.Item>
+              <Form.Item
+                name="confirm"
+                dependencies={["password"]}
+                hasFeedback
+                rules={[
+                  {
+                    required: true,
+                    message: "Veuillez confirmer votre mot de passe",
+                  },
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                      if (!value || getFieldValue("password") === value) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject(
+                        new Error(
+                          "Les deux mots de passes doivent correspondre!"
+                        )
+                      );
+                    },
+                  }),
+                ]}
+              >
+                <Input.Password
+                  placeholder="Confirmation"
+                  prefix={<LockOutlined className="site-form-item-icon" />}
                 />
               </Form.Item>
               {message}
               <Space>
                 <Button type="primary" htmlType="submit">
-                  Connexion
+                  S'inscrire
                 </Button>
-                <Link to="/signup">
-                  <Button>S'inscrire</Button>
-                </Link>
+                <Button></Button>
               </Space>
             </Form>
           </Card>

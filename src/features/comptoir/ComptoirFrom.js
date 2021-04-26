@@ -1,16 +1,14 @@
 import { Button, Form, Input } from "antd";
 import { useState } from "react";
 import { Redirect } from "react-router";
-import { useToken } from "../user/userSlice";
 import { create } from "./ComptoirAPI";
 
 export function ComptoirForm() {
   const [nom, setNom] = useState("");
   const [comptoir, setComptoir] = useState();
-  const token = useToken();
 
   const onFinish = () => {
-    create(token, { nom }).then((data) => setComptoir(data));
+    create({ nom }).then((data) => setComptoir(data));
   };
 
   const onFinishFailed = () => {};
