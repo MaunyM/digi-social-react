@@ -1,3 +1,4 @@
+import { Col, Row } from "antd";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router";
@@ -7,6 +8,7 @@ import { selectUser, useToken } from "../user/userSlice";
 import { createMessage, join, leave, myComptoir } from "./ComptoirAPI";
 import { MessageForm } from "./message/MessageForm";
 import { MessageList } from "./message/MessageList";
+import { transform } from "./message/MessageService";
 const api = process.env.REACT_APP_API_URL;
 
 export function Comptoir() {
@@ -32,7 +34,7 @@ export function Comptoir() {
     join(token, id).then((data) => {
       setComptoir(data);
       setPilliers(data.pilliers);
-      setMessages(data.messages);
+      setMessages(transform(data.messages));
     });
     return async () => {
       await leave();
@@ -50,7 +52,7 @@ export function Comptoir() {
       socket.on("update", () => {
         myComptoir(token).then((data) => {
           setPilliers(data.pilliers);
-          setMessages(data.messages);
+          setMessages(transform(data.messages));
         });
       });
   }, [socket, token]);
@@ -66,12 +68,17 @@ export function Comptoir() {
   return (
     <div>
       Comptoir {comptoir && comptoir.nom}
-      <UserList users={pilliers} />
-      <MessageList messages={messages}></MessageList>
-      <MessageForm
-        submitting={submitting}
-        onNewMessage={newMessageHandler}
-      ></MessageForm>
+      <Row>
+        <Col span={6}><UserList users={pilliers} /></Col>
+        <Col span={12}>
+          <MessageList messages={messages}></MessageList>
+          <MessageForm
+            submitting={submitting}
+            onNewMessage={newMessageHandler}
+          ></MessageForm>
+        </Col>
+        <Col span={6}></Col>
+      </Row>
     </div>
   );
 }
